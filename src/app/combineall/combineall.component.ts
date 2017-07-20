@@ -8,18 +8,27 @@ import { Observable } from 'rxjs/Rx';
 export class CombineallComponent implements OnInit {
 
   constructor() { }
-
+  //http://rxmarbles.com/#combineLatest
+  //Combile all nearest siblings of other till next not appear
   ngOnInit() {
     const source = Observable.interval(1000).take(2);
-//map each emitted value from source to interval observable that takes 5 values
-const example = source.map(val => Observable.interval(1000).map(i => `Result (${val}): ${i}`).take(5));
-/*
-  2 values from source will map to 2 (inner) interval observables that emit every 1s
-  combineAll uses combineLatest strategy, emitting the last value from each
-  whenever either observable emits a value
-*/
-const combined = example.combineAll();
-/*
+    //map each emitted value from source to interval observable that takes 5 values
+    const example = source.map(val => {
+     console.log("val",val);
+     return Observable.interval(500*(val+1)).map((i) => {
+         console.info("val , i",val,i);
+         return `Result (${val}): ${i}`;
+      }).take(5);
+    });
+
+    console.log("Example:",example);
+    /*
+      2 values from source will map to 2 (inner) interval observables that emit every 1s
+      combineAll uses combineLatest strategy, emitting the last value from each
+      whenever either observable emits a value
+    */
+    const combined = example.combineAll();
+    /*
   output:
   ["Result (0): 0", "Result (1): 0"]
   ["Result (0): 1", "Result (1): 0"]
